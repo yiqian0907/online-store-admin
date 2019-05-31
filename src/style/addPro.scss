@@ -1,0 +1,190 @@
+.add-pro-wrap{
+  float: right;
+  width: 704px;
+  padding-top: 20px;
+  .title-wrap{
+    height: 19px;
+    padding: 8px 0;
+    border-bottom: 1px solid #80A903;
+    margin-bottom: 20px;
+    .title{
+      color: #80A903;
+      font-size: 14px;
+    }
+    .selected-cate{
+      float: right;
+      font-size: 12px;
+      color: #363636;
+    }
+    .reset-btn{
+      width: 79px;
+      height: 26px;
+      color: #508504;
+      float: right;
+      margin-top: -8px;
+      border: 0 none;
+    }
+  }
+  .sel-category-wrap{
+    .select-field{
+      width: 500px;
+      height: 18px;
+      margin: 0 auto;
+      padding: 10px 0 50px;
+      font-size: 12px;
+      color: #363636;
+      &>div{
+        float: left;
+        select{
+          margin-right: 10px;
+        }
+      }
+    }
+
+  }
+
+  .fill-pro-info-wrap{
+    font-size: 14px;
+    overflow: hidden;
+    .fill-pro-info{
+      overflow: hidden;
+      width: 680px;
+      float: right;
+      .required{
+        color: #fc3000;
+      }
+      .basic-info{
+        .name-brand{
+          overflow: hidden;
+          margin-top: 10px;
+          &>div{
+            width: 300px;
+            float: left;
+          }
+        }
+        .price-vipprice-wrap{
+          overflow: hidden;
+          margin-top: 10px;
+          &>div{
+            width: 300px;
+            float: left;
+          }
+        }
+      }
+      .pro-prop-wrap{
+        margin-top: 10px;
+        overflow: hidden;
+        .title{
+          color:#000;
+          input{
+            float: right;
+            width: 79px;
+            height: 26px;
+            border: 0 none;
+          }
+        }
+        .pro-prop-main{
+          width: 628px;
+          float: right;
+          background-color: #fff;
+          margin-top: 10px;
+          border: 1px solid #DFD7D0;
+          overflow: hidden;
+          line-height: 30px;
+          padding-left: 30px;
+          select{
+            width: 168px;
+          }
+          .color-size-wrap{
+            font-size: 12px;
+            &>div{
+              overflow: hidden;
+              ul{
+                width: 550px;
+                float: right;
+                margin-right: 15px;
+                margin-bottom: 30px;
+                li{
+                  float: left;
+                  width: 135px;
+                  .color{
+                    display: inline-block;
+                    width: 15px;
+                    height: 15px;
+                    margin: 0 2px;
+                  }
+                }
+              }
+            }
+          }
+          .save-prop{
+            width: 79px;
+            height: 26px;
+            border: 0 none;
+            margin-top: 30px;
+            float: right;
+            margin-right: 100px;
+            margin-bottom: 30px;
+          }
+        }
+      }
+
+      .pro-quantity-wrap{
+        overflow: hidden;
+        .title{
+          height: 35px;
+          line-height: 35px;
+          margin-bottom: 20px;
+        }
+        table{
+          width: 380px;
+          border-collapse: collapse;
+          text-align: center;
+          margin-left: 25px;
+          float: left;
+          td{
+            height: 30px;
+            border: 1px solid #FAC083;
+            background-color: #fff;
+            width: 120px;
+            input{
+              width: 62px;
+            }
+          }
+          thead{
+            td{
+              background-color: #F8E2B9;
+            }
+          }
+        }
+        &>input{
+          width: 79px;
+          height: 26px;
+          float: right;
+          margin-top: 80px;
+          margin-right: 100px;
+          border: 0 none;
+        }
+      }
+
+      .pro-image-wrap{
+        margin-top: 10px;
+        overflow: hidden;
+        ul{
+          margin-top: 10px;
+          li{
+            width: 104px;
+            height: 150px;
+            float: left;
+            margin-right: 5px;
+            text-align: center;
+            img{
+              width: 104px;
+              height: 104px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

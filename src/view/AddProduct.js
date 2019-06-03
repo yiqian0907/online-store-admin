@@ -3,18 +3,22 @@ import { connect } from 'react-redux';
 import AddProTitle from '../component/AddProTitle';
 import ImgHandler from '../handleImg';
 import QuantityTable from '../component/QuantityTable';
-import {proImagesActionTypes} from '../action/proImagesAction';
+import Ueditor from '../component/Ueditor';
+import Service from '../service';
+import {productListActionTypes} from '../action/productList';
+import {Modal} from 'antd';
+
 
 function mapStateToProps(state) {
   return {
-
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    uploadImg(imgObj){
-      dispatch(proImagesActionTypes.uploadImgAsync(imgObj))
+    postPro(proInfo){
+      // console.log(proInfo);
+      return dispatch(productListActionTypes.addProductAsync(proInfo))
     }
   };
 }
@@ -47,7 +51,19 @@ class AddProduct extends Component {
       XXL: false,
       XXXL: false,
       XXXXL: false
-    }
+    },
+    images: [],
+    address:{
+      province: '广东',
+      city:'广州'
+    },
+    deliveryFee: 'salesCover',
+    recommendation: 1,
+    post:1,
+    postDate: null,
+    inventory:0,
+    products: [],
+    visible: false
   }
 
   handlerChange = (e) => {
@@ -76,6 +92,105 @@ class AddProduct extends Component {
         )
       }
     })
+  }
+
+  changeQuantity = (prop)=> {
+    let {products} = this.state;
+    let includes = false;
+    for(let i=0; i<products.length; i++){
+      if(products[i].color === prop.color && products[i].size === prop.size){
+        includes = true;
+        this.setState((preState)=>{
+          preState.products[i].quantity = prop.quantity;
+          return {
+            products: [
+              ...preState.products,
+            ]
+          }
+        })
+      }  
+    }
+    if(!includes){
+      products.push(prop);
+    }
+  }
+
+  uploadImg(target){
+    let formData = new FormData();
+    formData.append("imgFile",target.files[0])
+    Service.uploadImg(formData)
+    .then((res) => {
+      target.previousSibling.previousSibling.src = res.data.img;
+      this.state.images.push(res.data.img);
+    })
+  }
+
+  postProduct = () => {
+    let inventory=0;
+    let postDate=null;
+    let {products, post, proName, price, recommendation, images} = this.state;
+    for(let i=0; i<products.length; i++){
+      inventory += parseInt(products[i].quantity);
+    }
+    if(post === 1){
+      postDate = new Date(Date.now()).toLocaleDateString();
+    }
+    this.props.postPro({
+      name: proName,
+      price,
+      inventory,
+      sales: 0,
+      postDate,
+      recommendation,
+      images
+    })
+    .then(() => {
+      this.setState({
+        visible: true
+      })
+    })
+  }
+
+  handlerAddressChange = (e) => {
+    let target = e.target;
+    this.setState((preState) => {
+      return {
+        address: Object.assign(preState.address, 
+          {[target.name]: target.value}
+        )
+      }
+    })
+  }
+
+  dispalyCitySelect = () =>{
+    switch(this.state.address.province){
+      case '广东':
+        return (
+          <select name="city"  value={this.state.address.city} onChange={this.handlerAddressChange}>
+            <option value="广州">广州</option>
+            <option value="珠海">珠海</option>
+            <option value="深圳">深圳</option>
+          </select>
+        );
+      case '四川':
+        return (
+          <select name="city"  value={this.state.address.city} onChange={this.handlerAddressChange}>
+            <option value="成都">成都</option>
+            <option value="绵阳">绵阳</option>
+            <option value="攀枝花">攀枝花</option>
+          </select>
+        )
+      case '湖北':
+        return (
+          <select name="city"  value={this.state.address.city} onChange={this.handlerAddressChange}>
+            <option value="武汉">武汉</option>
+            <option value="荆州">荆州</option>
+            <option value="宜昌">宜昌</option>
+          </select>
+        )
+      default: 
+       return null;
+    }
   }
 
   render() {
@@ -244,7 +359,11 @@ class AddProduct extends Component {
                     <td>数量<span className="required">*</span></td>
                   </tr>
                 </thead>
-                <QuantityTable color={this.state.color} size={this.state.size}></QuantityTable>
+                <QuantityTable 
+                  color={this.state.color} 
+                  size={this.state.size}
+                  changeQuantity={this.changeQuantity}
+                ></QuantityTable>
               </table>
               <input type="button" value="保存" style={{background:`url(${ImgHandler.zzBtn}) no-repeat`}}/>
             </div>
@@ -254,33 +373,110 @@ class AddProduct extends Component {
                 <li>
                   <img src={ImgHandler.noPic} alt=""/>
                   <input type="button" value="上传图片" onClick={e=>e.target.nextSibling.click()} />
-                  <input type="file" id="upload1" name="file" onChange={e => this.props.uploadImg(e.target.files)}  style={{display:'none'}}/>
+                  <input type="file" id="upload1" name="file" onChange={e => this.uploadImg(e.target)}  style={{display:'none'}}/>
                 </li>
                 <li>
                   <img src={ImgHandler.noPic} alt=""/>
                   <input type="button" value="上传图片" onClick={e=>e.target.nextSibling.click()} />
-                  <input type="file" id="upload" onChange={e => this.props.uploadImg(e.target.files)} style={{display:'none'}}/>
+                  <input type="file" id="upload" onChange={e => this.uploadImg(e.target)} style={{display:'none'}}/>
                 </li>
                 <li>
                   <img src={ImgHandler.noPic} alt=""/>
                   <input type="button" value="上传图片" onClick={e=>e.target.nextSibling.click()} />
-                  <input type="file" id="upload" onChange={e => this.props.uploadImg(e.target.files)} style={{display:'none'}}/>
+                  <input type="file" id="upload" onChange={e => this.uploadImg(e.target)} style={{display:'none'}}/>
                 </li>
                 <li>
                   <img src={ImgHandler.noPic} alt=""/>
                   <input type="button" value="上传图片" onClick={e=>e.target.nextSibling.click()} />
-                  <input type="file" id="upload" onChange={e => this.props.uploadImg(e.target.files)} style={{display:'none'}}/>
+                  <input type="file" id="upload" onChange={e => this.props.uploadImg(e.target)} style={{display:'none'}}/>
                 </li>
                 <li>
                   <img src={ImgHandler.noPic} alt=""/>
                   <input type="button" value="上传图片" onClick={e=>e.target.nextSibling.click()} />
-                  <input type="file" id="upload" onChange={e => this.props.uploadImg(e.target.files)} style={{display:'none'}}/>
+                  <input type="file" id="upload" onChange={e => this.props.uploadImg(e.target)} style={{display:'none'}}/>
                 </li>
                 
               </ul>
             </div>
+            <div className="pro-desc-wrap">
+              <div className="title">商品描述：</div>
+              <Ueditor id='editor'></Ueditor>
+            </div>
           </div>
         </div>
+        <div className="delivery-info-wrap">
+          <AddProTitle index={3} title="商品物流信息"></AddProTitle>
+          <div className="delivery-info">
+            <div className="address-info">
+              省份：
+              <select name="province" value={this.state.address.province} onChange={this.handlerAddressChange}>
+                <option value="广东">广东</option>
+                <option value="四川">四川</option>
+                <option value="湖北">湖北</option>
+              </select>
+              城市：
+              {this.dispalyCitySelect()}
+            </div>
+            <div className="delivery-fees">
+              <ul>
+                <li><input type="radio" value="salesCover" onChange={this.handlerChange} defaultChecked name="deliveryFee" />卖家包邮</li>
+                <li><input type="radio" value="cusCover" onChange={this.handlerChange} name="deliveryFee" />买家付运费</li>
+                <li><input type="radio" value="cusPick" onChange={this.handlerChange} name="deliveryFee" />买家自提</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="pro-recom-info-wrap">
+          <AddProTitle index={4} title="商品推荐"></AddProTitle>
+          <ul>
+            <li>
+              新品推荐：
+              <span><input type="radio" name="recommendation" value={1} onChange={this.handlerChange} defaultChecked />是</span>
+              您当前有<em>3</em>个新品推荐位，您已使用<em>1</em>个
+            </li>
+            <li>
+              热卖推荐：
+              <span><input type="radio" name="recommendation" value={2} onChange={this.handlerChange} />是</span>
+              您当前有<em>3</em>个热卖推荐位，您已使用<em>0</em>个
+            </li>
+          </ul>
+        </div>
+        <div className="pro-post-setting-wrap">
+          <AddProTitle index={5} title="发布选项"></AddProTitle>
+          <ul>
+            <li><input type="radio" name="post" value={1} onChange={this.handlerChange} defaultChecked />立刻发布</li>
+            <li><input type="radio" name="post" value={2} onChange={this.handlerChange} />定时发布</li>
+            <li><input type="radio" name="post" value={3} onChange={this.handlerChange} />放入仓库</li>
+          </ul>
+        </div>
+        <div className="btns-wrap">
+          <input type="button" 
+          value="发布" 
+          style={{background:`url(${ImgHandler.zzBtn}) no-repeat`}} 
+          onClick={ this.postProduct} />
+          <input type="button" value="预览" style={{background:`url(${ImgHandler.editBtn}) no-repeat`}} />
+        </div>
+        <Modal 
+          title="提示消息" 
+          visible={this.state.visible} 
+          okText="前往商品列表"
+          cancelText="继续发布商品"
+          onOk={()=>{
+            this.props.history.push('/admin/prolist')
+            this.setState({
+              visible: false
+            })
+          }}
+          onCancel={()=>{
+            window.location.reload();
+            this.setState({
+              visible: false
+            })
+          }}
+        >
+          <h3>商品发布成功</h3>
+          <p>您可以在商品列表-出售中的商品中查看该商品</p>
+        </Modal>
       </div>
     );
   }

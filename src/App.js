@@ -3,6 +3,7 @@ import './App.scss';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom'
 import Login from './view/Login';
 import Admin from './view/Admin';
+import 'antd/dist/antd.css';
 
 function App() {
   return (

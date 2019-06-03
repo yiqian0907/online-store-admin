@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Service from '../service';
 
 class Login extends Component {
   state={
@@ -28,7 +29,11 @@ class Login extends Component {
   }
 
   userLogin = () => {
-    axios.post('http://localhost:45550/api/userlogin', {
+    // axios.post('http://localhost:45550/api/userlogin', {
+    //   username: this.state.username,
+    //   password: this.state.password
+    // })
+    Service.login({
       username: this.state.username,
       password: this.state.password
     })
@@ -37,6 +42,7 @@ class Login extends Component {
         if(this.state.rememberPwd){
           // console.log(res.data);
           localStorage.setItem('LOGIN_USER', JSON.stringify(res.data.user))
+          sessionStorage.setItem('LOGIN_TOKEN', res.data.token)
         }
         sessionStorage.setItem('LOGIN_USER', JSON.stringify(res.data.user))
         this.props.history.push('/admin')

@@ -1,17 +1,12 @@
 const jsonServer = require('json-server');
 const server = jsonServer.create();
-// const teacherJson = require('./teacher.json');
-// const studenJson = require('./student.json');
-// const permissionData = require('./permission');
 const captcha = require('svg-captcha');
-
-// let materialArr = require('./materialArr');
-// const router2 = jsonServer.router({...materialArr, ...studenJson});
-// const router3 = jsonServer.router(permissionData);
-// const router = jsonServer.router({...materialArr, ...teacherJson});
 const userArr = require('./user');
 const routerUser = jsonServer.router({user:userArr});
+const productJson = require('./src/static/proList.json');
+const routerProducts = jsonServer.router(productJson);
 const multer = require('multer');
+const fs = require('fs');
 const path = require('path');
 const middlewares = jsonServer.defaults();
 
@@ -27,27 +22,7 @@ const upload = multer({ storage: storage });
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 // 所有的api的请求都要求登陆后才能获取到对应的数据
-server.use('/api/teacher', (req, res, next) => {
-  if (req.get('Authorization')) {
-    next();
-  } else {
-    res.status(401).jsonp({
-      code: 8,
-      msg: '用户没有登录，不能访问'
-    });
-  }
-});// 所有的api的请求都要求登陆后才能获取到对应的数据
-server.use('/api/student', (req, res, next) => {
-  if (req.get('Authorization')) {
-    next();
-  } else {
-    res.status(401).jsonp({
-      code: 8,
-      msg: '用户没有登录，不能访问'
-    });
-  }
-});
-server.use('/api/user', (req, res, next) => {
+server.use('/api/product', (req, res, next) => {
   if (req.get('Authorization')) {
     next();
   } else {
@@ -58,6 +33,36 @@ server.use('/api/user', (req, res, next) => {
   }
 });
 
+server.get('/api/product', (req, res) => {
+  res.jsonp({
+    product: productJson.products,
+    code: 1,
+    msg: '请求成功'
+  })
+})
+
+server.post('/api/product', (req, res) => {
+  // console.log(req.body);
+  fs.readFile(path.join(__dirname, '/src/static/proList.json'), function(err, data){
+    if(err){
+      console.log(err);
+    }
+    let productJSON = JSON.parse(data.toString());
+    productJSON.products.push(req.body);
+    console.log(productJSON.products);
+    let productStr = JSON.stringify(productJSON);
+    fs.writeFile(path.join(__dirname, '/src/static/proList.json'), productStr, function(error){
+      if(error){
+        console.log(error);
+      }
+    })
+  })
+  res.jsonp({
+    product: productJson.products,
+    code: 1,
+    msg: '请求成功'
+  })
+})
 
 // 用户登录成功
 server.post('/api/userlogin', (req, res) => {
@@ -80,9 +85,7 @@ server.post('/api/userlogin', (req, res) => {
     });
   }
 });
-// server.use('/api/teacher', router);
-// server.use('/api/student', router2);
-// server.use('/per', router3);
+server.use('/api/product', routerProducts);
 server.get('/api/code', (req,res)=>{
   const cap = captcha.create();
   // req.session.captcha = cap.text; // session 存储
@@ -90,7 +93,7 @@ server.get('/api/code', (req,res)=>{
   res.send(cap.data);
 });
 // 文件上传
-server.all('/api/upload', upload.single('imgF'), function(req, res, next) {
+server.all('/api/upload', upload.single('imgFile'), function(req, res, next) {
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
   var file = req.file;

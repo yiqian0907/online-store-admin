@@ -8,9 +8,10 @@ body {
   color: #363636;
 }
 
-div, ul, li, span, p, i, a, select, img, option, input{
+div, ul, li, span, p, i, a, select, img, option, input, table, thead, tbody, tr, td{
   margin: 0;
-  padding: 0
+  padding: 0;
+  box-sizing: content-box; 
 }
 
 code {

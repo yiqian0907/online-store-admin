@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import ImgHandler from '../handleImg';
-import {Link, Route, HashRouter as Router} from 'react-router-dom';
+import {NavLink, Link, Route, HashRouter as Router} from 'react-router-dom';
 import AdminIndex from './AdminIndex';
 import AddPro from './AddProduct';
+import ProList from './ProList';
 
 class Admin extends Component {
 
@@ -76,10 +77,10 @@ class Admin extends Component {
               </div>
               <ul className="product-admin-list">
                 <li className="add-pro" style={adminMenuListStyle} onMouseEnter={this.mouseEnter} onMouseLeave={this.onMouseLeave}>
-                  <Link to={`${this.props.match.path}/addpro`}>添加商品</Link>
+                  <NavLink to={`${this.props.match.path}/addpro`}>添加商品</NavLink>
                 </li>
                 <li className="pro-list"  style={adminMenuListStyle} onMouseEnter={this.mouseEnter} onMouseLeave={this.onMouseLeave}>
-                  <Link to={`${this.props.match.path}/prolist`}>商品列表</Link>
+                  <NavLink to={`${this.props.match.path}/prolist`}>商品列表</NavLink>
                 </li>
                 <li className="pick-pos"  style={adminMenuListStyle} onMouseEnter={this.mouseEnter} onMouseLeave={this.onMouseLeave}>
                   <Link to={`${this.props.match.path}/pick`}>自提点管理</Link>
@@ -120,6 +121,7 @@ class Admin extends Component {
             <Router>
             <Route path={`${this.props.match.path}/`} exact component={AdminIndex}></Route>
             <Route path={`${this.props.match.path}/addpro`} component={AddPro}></Route>
+            <Route path={`${this.props.match.path}/prolist`} component={ProList}></Route>
             </Router>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 
 class QuantityTable extends Component {
   state = {
-    quantity:''
+    // quantity:''
   }
 
   renderColorColumn(color){
@@ -65,7 +65,17 @@ class QuantityTable extends Component {
                               null
                             }
                             <td>{sizeKey}</td>
-                            <td><input type="text" name={this.state.quantity}/></td>
+                            <td>
+                              <input 
+                                type="text" 
+                                onChange={(e)=>this.props.changeQuantity({
+                                  color: colorKey,
+                                  size: sizeKey,
+                                  quantity: e.target.value   
+                                })} 
+                                // name={this.state.quantity}
+                              />
+                            </td>
                           </tr>
                         )
                       }

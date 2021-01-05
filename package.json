@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.19.2",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "json-server": "^0.15.0",
     "multer": "^1.4.1",
     "react": "^16.8.6",
